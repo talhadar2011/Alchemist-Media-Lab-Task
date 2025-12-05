@@ -8,38 +8,35 @@ defmodule TakeHomeTaskWeb.CampaignLive.Index do
     ~H"""
     <Layouts.app flash={@flash}>
       <.header>
-        Listing Campaign
+         Campaigns
         <:actions>
           <.button variant="primary" navigate={~p"/campaign/new"}>
             <.icon name="hero-plus" /> New Campaign
           </.button>
         </:actions>
       </.header>
+        <.table id="campaign" rows={@streams.campaign_collection} row_click={fn {_id, campaign} -> JS.navigate(~p"/campaign/#{campaign}") end} >
+      <:col :let={{_id, campaign}} label="Name">{campaign.name}</:col>
+      <:col :let={{_id, campaign}} label="Daily budget">{campaign.daily_budget}</:col>
+      <:col :let={{_id, campaign}} label="Status">
+        <div class="flex justify-center items-center gap-2">
+        {campaign.status}
+        <div class={"w-2 h-2 rounded " <>
+        if campaign.status == "Active",
+        do: "bg-green-400",
+        else: "bg-red-400"}>
+        </div>
+        </div>
+      </:col>
+      <:action :let={{_id, campaign}}> <div class="sr-only"> <.link navigate={~p"/campaign/#{campaign}"}>Show</.link> </div>
+      <.link navigate={~p"/campaign/#{campaign}/edit"}>Edit</.link>
+      </:action>
+      <:action :let={{id, campaign}}> <.link phx-click={JS.push("delete", value: %{id: campaign.id})
+      |> hide("##{id}")} data-confirm="Are you sure?" > Delete </.link> </:action>
+       </.table>
 
-      <.table
-        id="campaign"
-        rows={@streams.campaign_collection}
-        row_click={fn {_id, campaign} -> JS.navigate(~p"/campaign/#{campaign}") end}
-      >
-        <:col :let={{_id, campaign}} label="Name">{campaign.name}</:col>
-        <:col :let={{_id, campaign}} label="Daily budget">{campaign.daily_budget}</:col>
-        <:col :let={{_id, campaign}} label="Status">{campaign.status}</:col>
-        <:action :let={{_id, campaign}}>
-          <div class="sr-only">
-            <.link navigate={~p"/campaign/#{campaign}"}>Show</.link>
-          </div>
-          <.link navigate={~p"/campaign/#{campaign}/edit"}>Edit</.link>
-        </:action>
-        <:action :let={{id, campaign}}>
-          <.link
-            phx-click={JS.push("delete", value: %{id: campaign.id}) |> hide("##{id}")}
-            data-confirm="Are you sure?"
-          >
-            Delete
-          </.link>
-        </:action>
-      </.table>
-    </Layouts.app>
+
+     </Layouts.app>
     """
   end
 

@@ -18,7 +18,7 @@ defmodule TakeHomeTaskWeb.CampaignLive.Form do
         <.input field={@form[:daily_budget]} type="number" label="Daily budget" />
         <.input
         field={@form[:status]} type="select"
-        options={["active": "active", "paused": "paused"]}
+        options={[Active: "Active", Paused: "Paused"]}
         label="Status" />
         <footer>
           <.button phx-disable-with="Saving..." variant="primary">Save Campaign</.button>
@@ -71,6 +71,7 @@ defmodule TakeHomeTaskWeb.CampaignLive.Form do
   defp save_campaign(socket, :edit, campaign_params) do
     case Campaigns.update_campaign(socket.assigns.campaign, campaign_params) do
       {:ok, campaign} ->
+
         {:noreply,
          socket
          |> put_flash(:info, "Campaign updated successfully")
@@ -86,7 +87,7 @@ defmodule TakeHomeTaskWeb.CampaignLive.Form do
       {:ok, campaign} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Campaign created successfully")
+          |> put_flash(:info, "Campaign created successfully")
          |> push_navigate(to: return_path(socket.assigns.return_to, campaign))}
 
       {:error, %Ecto.Changeset{} = changeset} ->
