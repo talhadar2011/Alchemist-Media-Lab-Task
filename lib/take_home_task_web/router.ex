@@ -18,6 +18,10 @@ defmodule TakeHomeTaskWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+    live "/campaign", CampaignLive.Index, :index
+    live "/campaign/new", CampaignLive.Form, :new
+    live "/campaign/:id", CampaignLive.Show, :show
+    live "/campaign/:id/edit", CampaignLive.Form, :edit
   end
 
   # Other scopes may use custom stacks.
