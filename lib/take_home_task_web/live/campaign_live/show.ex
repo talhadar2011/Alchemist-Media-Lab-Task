@@ -75,9 +75,7 @@ defmodule TakeHomeTaskWeb.CampaignLive.Show do
     """
   end
 
-  # 0.5 sec
   @impression_interval 500
-  # 3 sec
   @click_interval 3000
   @impl true
   def mount(%{"id" => id}, _session, socket) do
@@ -98,24 +96,21 @@ defmodule TakeHomeTaskWeb.CampaignLive.Show do
      })
      |> assign(:running, false)}
   end
-
+  @impl true
   def handle_event("start_timer", _params, socket) do
     if socket.assigns.running do
-      # Stop the timer manually
       {:noreply, assign(socket, :running, false)}
     else
-      # Start timers
       :timer.send_interval(@impression_interval, self(), :add_impression)
       :timer.send_interval(@click_interval, self(), :add_click)
       :timer.send_interval(@click_interval, self(), :add_ctr)
 
-      # Schedule auto-stop & restart after 10 sec
       Process.send_after(self(), :system_crash, 10_000)
 
       {:noreply, assign(socket, :running, true)}
     end
   end
-
+@impl true
   def handle_info(:add_impression, socket) do
     if socket.assigns.running do
       {:noreply, update(socket, :impressions, &(&1 + 1))}
@@ -157,7 +152,6 @@ defmodule TakeHomeTaskWeb.CampaignLive.Show do
       timestamp = DateTime.utc_now() |> Calendar.strftime("%H:%M:%S")
       new_event = %{type: "error", time: timestamp}
 
-      # Show flash notification
       {:noreply,
        socket
        |> update(:events, fn events -> [new_event | events] end)
