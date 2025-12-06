@@ -22,6 +22,8 @@ defmodule TakeHomeTaskWeb.Router do
     live "/campaign/new", CampaignLive.Form, :new
     live "/campaign/:id", CampaignLive.Show, :show
     live "/campaign/:id/edit", CampaignLive.Form, :edit
+
+    match :*, "/*path", PageController, :not_found
   end
 
   # Other scopes may use custom stacks.

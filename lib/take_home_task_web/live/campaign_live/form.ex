@@ -90,7 +90,7 @@ defmodule TakeHomeTaskWeb.CampaignLive.Form do
           |> put_flash(:info, "Campaign created successfully")
          |> push_navigate(to: return_path(socket.assigns.return_to, campaign))}
 
-      {:error, %Ecto.Changeset{} = changeset} ->
+        {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, form: to_form(changeset))}
     end
   end
