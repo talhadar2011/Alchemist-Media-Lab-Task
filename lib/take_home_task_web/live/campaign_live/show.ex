@@ -8,8 +8,9 @@ defmodule TakeHomeTaskWeb.CampaignLive.Show do
     ~H"""
     <Layouts.app flash={@flash}>
       <.header>
+      <div class="text-2xl font-bold">
         {@campaign.name}
-        <:subtitle>This is a campaign record from your database.</:subtitle>
+      </div>
         <:actions>
           <.button navigate={~p"/campaign"}>
             <.icon name="hero-arrow-left" />
@@ -20,7 +21,7 @@ defmodule TakeHomeTaskWeb.CampaignLive.Show do
         </:actions>
       </.header>
       <div class="p-6 grid gap-6 max-w-4xl mx-auto">
-        <h1 class="text-3xl font-bold">Campaign Preview Dashboard</h1>
+        <h1 class="text-3xl font-bold">{@campaign.name} Preview Dashboard</h1>
 
         <div class="rounded-2xl shadow p-4 bg-white text-black">
           <div class="grid grid-cols-3 gap-4 text-center">

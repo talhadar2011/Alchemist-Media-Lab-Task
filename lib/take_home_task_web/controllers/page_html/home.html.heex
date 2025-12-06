@@ -6,12 +6,26 @@
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
     <%= if length(@list) > 0 do %>
       <%= for item <- @list do %>
-        <div class="m-2 p-4 border border-gray-300 rounded">
-          <%= item.name %>
+        <div class="cursor-pointer h-50 m-2 p-4 border border-gray-300 rounded bg-white text-black "
+        phx-click={ JS.navigate(~p"/campaign/#{item.id}")}
+        >
+         <div class="flex justify-between">
+          <div class="text-xl font-bold"><%= item.name %></div>
+          <div class="bg-green-400 text-white font-bold p-1 rounded"><%=item.status%></div>
+
+         </div>
+        <div class="mt-5 text-xl font-bold">
+        Daily Budget: <%=item.daily_budget %>
+        </div>
         </div>
       <% end %>
     <% else %>
-      <h1>You have no active Campaigns</h1>
+     <div class=" mt-10 flex-col justify-center items-center">
+          <h1 class="text-xl font-bold ">Wellcome you have no active campains. Vist Campaigns page and create new campaigns. </h1>
+           <button
+            phx-click={ JS.navigate(~p"/campaign")}
+            class="cursor-pointer bg-white text-black rounded p-2 mt-5 font-bold hover:bg-gray-500 hover:text-white">Go To Campaigns</button>
+      </div>
     <% end %>
   </div>
 </Layouts.app>
