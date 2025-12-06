@@ -22,7 +22,7 @@ defmodule TakeHomeTaskWeb.CampaignLive.Show do
       <div class="p-6 grid gap-6 max-w-4xl mx-auto">
         <h1 class="text-3xl font-bold">Campaign Preview Dashboard</h1>
 
-        <div class="rounded-2xl shadow p-4">
+        <div class="rounded-2xl shadow p-4 bg-white text-black">
           <div class="grid grid-cols-3 gap-4 text-center">
             <div>
               <p class="text-sm uppercase text-gray-500">Impressions</p>
@@ -47,16 +47,28 @@ defmodule TakeHomeTaskWeb.CampaignLive.Show do
           <% end %>
         </button>
 
-        <div class="rounded-2xl shadow p-4">
-          <h2 class="text-xl font-semibold mb-3">Live Traffic Events</h2>
-          <div class="max-h-64 overflow-auto grid gap-2">
-            <%= for event <- @events do %>
-              <div class="p-2 bg-gray-100 rounded text-black">
-                {event.time} - {String.capitalize(event.type)}
-              </div>
-            <% end %>
-          </div>
-        </div>
+      <div class="rounded-2xl shadow p-4 bg-white text-black">
+      <h2 class="text-xl font-semibold mb-3 underline">Live Traffic Events</h2>
+      <div class="max-h-64 overflow-auto grid gap-2">
+        <%= if length(@events) > 0 do %>
+          <%= for event <- @events do %>
+            <div class={
+            "p-2 rounded " <>
+            cond do
+              event.type == "click" -> "bg-gray-200 text-black"
+              event.type == "back online" -> "bg-green-200 text-black"
+              true -> "bg-red-400 text-white"
+            end
+          }>
+              <%= event.time %> - <%= String.capitalize(event.type) %>
+            </div>
+          <% end %>
+        <% else %>
+          <h1 class="text-gray-500 italic">No current Events Available</h1>
+        <% end %>
+      </div>
+    </div>
+
       </div>
     </Layouts.app>
     """
@@ -140,14 +152,15 @@ defmodule TakeHomeTaskWeb.CampaignLive.Show do
 
   def handle_info(:system_crash, socket) do
     if socket.assigns.running do
-      # Stop timers
       socket = assign(socket, :running, false)
+      timestamp = DateTime.utc_now() |> Calendar.strftime("%H:%M:%S")
+      new_event = %{type: "error", time: timestamp}
 
       # Show flash notification
       {:noreply,
        socket
-       |> put_flash(:error, "System crash!")
-       # Schedule automatic restart after 1 sec
+       |> update(:events, fn events -> [new_event | events] end)
+
        |> then(fn s ->
          Process.send_after(self(), :auto_restart, 3000)
          s
@@ -159,11 +172,19 @@ defmodule TakeHomeTaskWeb.CampaignLive.Show do
 
   def handle_info(:auto_restart, socket) do
   if !socket.assigns.running do
+      timestamp = DateTime.utc_now() |> Calendar.strftime("%H:%M:%S")
+      new_event = %{type: "back online", time: timestamp}
+
     :timer.send_interval(@impression_interval, self(), :add_impression)
     :timer.send_interval(@click_interval, self(), :add_click)
     :timer.send_interval(@click_interval, self(), :add_ctr)
 
-    {:noreply, assign(socket, :running, true)}
+    socket =
+      socket
+      |> assign(:running, true)
+      |> update(:events, fn events -> [new_event | events] end)
+
+    {:noreply, socket}
   else
     {:noreply, socket}
   end

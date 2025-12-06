@@ -35,11 +35,11 @@ defmodule TakeHomeTaskWeb.Layouts do
 
   def app(assigns) do
     ~H"""
-    <header class="navbar px-4 sm:px-6 lg:px-8">
+    <header class="navbar px-4 bg-white sm:px-6 lg:px-8 text-black shadow-lg">
       <div class="flex-1">
         <a href="/" class="flex-1 flex w-fit items-center gap-2">
           <img src={~p"/images/alchemist_media_labs_logo.webp"} width="36" />
-          <span class="text-sm font-semibold">Alchemist_Media_Lab</span>
+          <span class="text-sm font-semibold ">Alchemist_Media_Lab</span>
         </a>
       </div>
       <div class="flex-none">
