@@ -42,9 +42,9 @@ defmodule TakeHomeTaskWeb.CampaignLive.Show do
 
         <button phx-click="start_timer" class=" cursor-pointer rounded-2xl p-4 bg-white text-black">
           <%= if @running do %>
-            Stop
+            Stop Traffic
           <% else %>
-            Start
+            Start Traffic
           <% end %>
         </button>
 
