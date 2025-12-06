@@ -101,4 +101,13 @@ defmodule TakeHomeTask.Campaigns do
   def change_campaign(%Campaign{} = campaign, attrs \\ %{}) do
     Campaign.changeset(campaign, attrs)
   end
+    @doc"""
+    Get active campains for landing page
+    """
+  def list_active_campaigns do
+    from(c in Campaign,
+      where: c.status == "Active"
+    )
+    |> Repo.all()
+end
 end

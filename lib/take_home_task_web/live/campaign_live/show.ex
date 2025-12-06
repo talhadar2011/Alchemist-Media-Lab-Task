@@ -39,33 +39,134 @@ defmodule TakeHomeTaskWeb.CampaignLive.Show do
           </div>
         </div>
 
-        <button class="rounded-2xl p-4 bg-white text-black">
-          button
+        <button phx-click="start_timer" class=" cursor-pointer rounded-2xl p-4 bg-white text-black">
+          <%= if @running do %>
+            Stop
+          <% else %>
+            Start
+          <% end %>
         </button>
 
         <div class="rounded-2xl shadow p-4">
           <h2 class="text-xl font-semibold mb-3">Live Traffic Events</h2>
-          <div class="max-h-64 overflow-auto grid gap-2"></div>
+          <div class="max-h-64 overflow-auto grid gap-2">
+            <%= for event <- @events do %>
+              <div class="p-2 bg-gray-100 rounded text-black">
+                {event.time} - {String.capitalize(event.type)}
+              </div>
+            <% end %>
+          </div>
         </div>
       </div>
     </Layouts.app>
     """
   end
 
+  # 0.5 sec
+  @impression_interval 500
+  # 3 sec
+  @click_interval 3000
   @impl true
   def mount(%{"id" => id}, _session, socket) do
     impressions = 0
     clicks = 0
     ctr = 0
+    events = []
+
     {:ok,
      socket
      |> assign(:page_title, "Show Campaign")
      |> assign(:campaign, Campaigns.get_campaign!(id))
      |> assign(%{
-        impressions: impressions,
-        clicks: clicks,
-        ctr: ctr
-      })
-    }
+       impressions: impressions,
+       clicks: clicks,
+       ctr: ctr,
+       events: events
+     })
+     |> assign(:running, false)}
   end
+
+  def handle_event("start_timer", _params, socket) do
+    if socket.assigns.running do
+      # Stop the timer manually
+      {:noreply, assign(socket, :running, false)}
+    else
+      # Start timers
+      :timer.send_interval(@impression_interval, self(), :add_impression)
+      :timer.send_interval(@click_interval, self(), :add_click)
+      :timer.send_interval(@click_interval, self(), :add_ctr)
+
+      # Schedule auto-stop & restart after 10 sec
+      Process.send_after(self(), :system_crash, 10_000)
+
+      {:noreply, assign(socket, :running, true)}
+    end
+  end
+
+  def handle_info(:add_impression, socket) do
+    if socket.assigns.running do
+      {:noreply, update(socket, :impressions, &(&1 + 1))}
+    else
+      {:noreply, socket}
+    end
+  end
+
+  def handle_info(:add_click, socket) do
+    if socket.assigns.running do
+      timestamp = DateTime.utc_now() |> Calendar.strftime("%H:%M:%S")
+      new_event = %{type: "click", time: timestamp}
+
+      {:noreply,
+       socket
+       |> update(:clicks, &(&1 + 1))
+       |> update(:events, fn events -> [new_event | events] end)}
+    else
+      {:noreply, socket}
+    end
+  end
+
+  def handle_info(:add_ctr, socket) do
+    if socket.assigns.running and socket.assigns.clicks > 0 do
+      impressions = socket.assigns.impressions
+      clicks = socket.assigns.clicks
+
+      ctr = Float.round(impressions / clicks, 2)
+
+      {:noreply, assign(socket, :ctr, ctr)}
+    else
+      {:noreply, socket}
+    end
+  end
+
+  def handle_info(:system_crash, socket) do
+    if socket.assigns.running do
+      # Stop timers
+      socket = assign(socket, :running, false)
+
+      # Show flash notification
+      {:noreply,
+       socket
+       |> put_flash(:error, "System crash!")
+       # Schedule automatic restart after 1 sec
+       |> then(fn s ->
+         Process.send_after(self(), :auto_restart, 3000)
+         s
+       end)}
+    else
+      {:noreply, socket}
+    end
+  end
+
+  def handle_info(:auto_restart, socket) do
+  if !socket.assigns.running do
+    :timer.send_interval(@impression_interval, self(), :add_impression)
+    :timer.send_interval(@click_interval, self(), :add_click)
+    :timer.send_interval(@click_interval, self(), :add_ctr)
+
+    {:noreply, assign(socket, :running, true)}
+  else
+    {:noreply, socket}
+  end
+end
+
 end
