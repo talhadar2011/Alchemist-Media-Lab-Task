@@ -40,7 +40,7 @@ defmodule TakeHomeTaskWeb.CampaignLive.Show do
           </div>
         </div>
 
-        <button phx-click="start_timer" class=" cursor-pointer rounded-2xl p-4 bg-white text-black">
+        <button phx-click="start_timer" class=" shadow-lg cursor-pointer rounded-2xl p-4 bg-white text-black">
           <%= if @running do %>
             Stop Traffic
           <% else %>
@@ -48,7 +48,7 @@ defmodule TakeHomeTaskWeb.CampaignLive.Show do
           <% end %>
         </button>
 
-      <div class="rounded-2xl shadow p-4 bg-white text-black">
+      <div class="rounded-2xl shadow-lg p-4 bg-white text-black">
       <h2 class="text-xl font-semibold mb-3 underline">Live Traffic Events</h2>
       <div class="max-h-64 overflow-auto grid gap-2">
         <%= if length(@events) > 0 do %>
