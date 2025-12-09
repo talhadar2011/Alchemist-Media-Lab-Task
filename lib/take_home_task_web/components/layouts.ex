@@ -37,10 +37,12 @@ defmodule TakeHomeTaskWeb.Layouts do
     ~H"""
     <header class="navbar px-4 bg-white sm:px-6 lg:px-8 text-black shadow-lg">
       <div class="flex-1">
+      <div class="fixed bg-gray-200 top-0 w-25 h-35 p-1 mb-2  flex justifiy-center items-center  rounded-b-lg -skew-y-3 shadow-lg">
         <a href="/" class="flex-1 flex w-fit items-center gap-2">
-          <img src={~p"/images/alchemist_media_labs_logo.webp"} width="36" />
-          <span class="text-sm font-semibold ">Alchemist_Media_Lab</span>
+          <img src={~p"/images/logo_alchemistSquare__250px.png"} width="200" />
         </a>
+      </div>
+
       </div>
       <div class="flex-none">
         <ul class="flex flex-column px-1 space-x-4 items-center">
