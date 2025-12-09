@@ -12,19 +12,21 @@ defmodule TakeHomeTaskWeb.CampaignLive.Form do
         {@page_title}
         <:subtitle>Use this form to manage campaign records in your database.</:subtitle>
       </.header>
-
+      <div class="bg-gray-200 rounded-xl shadow-lg p-6">
       <.form for={@form} id="campaign-form" phx-change="validate" phx-submit="save">
-        <.input field={@form[:name]} type="text" label="Name" />
+        <.input  field={@form[:name]} type="text" label="Name" />
         <.input field={@form[:daily_budget]} type="number" label="Daily budget" />
         <.input
         field={@form[:status]} type="select"
         options={[Active: "Active", Paused: "Paused"]}
         label="Status" />
         <footer>
-          <.button phx-disable-with="Saving..." variant="primary">Save Campaign</.button>
+          <.button  phx-disable-with="Saving..." variant="primary">Save Campaign</.button>
           <.button navigate={return_path(@return_to, @campaign)}>Cancel</.button>
         </footer>
       </.form>
+      </div>
+
     </Layouts.app>
     """
   end
