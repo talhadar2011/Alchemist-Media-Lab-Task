@@ -5,11 +5,12 @@ defmodule TakeHomeTaskWeb.CampaignLive.Index do
 
   @impl true
   def render(assigns) do
-  IO.inspect(assigns.streams, label: "Assigns in CampaignLive.Index")
+    IO.inspect(assigns.streams, label: "Assigns in CampaignLive.Index")
+
     ~H"""
     <Layouts.app flash={@flash}>
       <.header>
-         Campaigns
+        Campaigns
         <:actions>
           <.button variant="primary" navigate={~p"/campaign/new"}>
             <.icon name="hero-plus" /> New Campaign
@@ -17,7 +18,6 @@ defmodule TakeHomeTaskWeb.CampaignLive.Index do
         </:actions>
       </.header>
       <%= if @streams.campaign_collection != [] do %>
-
         <%!-- <.table id="campaign" rows={@streams.campaign_collection} row_click={fn {_id, campaign} -> JS.navigate(~p"/campaign/#{campaign}") end} >
           <:col :let={{_id, campaign}} label="Name">
             <%= campaign.name %>
@@ -47,13 +47,41 @@ defmodule TakeHomeTaskWeb.CampaignLive.Index do
             </.link>
           </:action>
         </.table> --%>
+        <div id="grid" phx-update="stream" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+          <%= for {dom_id,item} <- @streams.campaign_collection do %>
+            <div
+              id={dom_id}
+              class=" shadow-lg cursor-pointer h-50 m-2 p-4 border border-gray-300 rounded-xl bg-white text-black hover:scale-95 hover:shadow-2xl transition-transform"
+              phx-click={JS.navigate(~p"/campaign/#{item.id}")}
+            >
+              <div class="flex justify-between">
+                <div class="text-xl font-bold">{item.name}</div>
+                <div class={
+                  "text-white font-bold p-1 rounded " <>
+                  if item.status == "Active", do: "bg-green-400", else: "bg-red-400"
+                }>
+                  <%= item.status %>
+                </div>
+                </div>
+              <div class="mt-5 text-xl font-bold">
+                Daily Budget: {item.daily_budget}
+              </div>
+              <button class=" cursor-pointer bg-red-400 p-2 rounded text-white mt-10" phx-click={JS.push("delete", value: %{id: item.id})
+              |> hide("##{dom_id}")} data-confirm="Are you sure?"
+              >Delete
+              </button>
+              <button class="w-17 cursor-pointer bg-blue-400 p-2 rounded text-white mt-10" phx-click={JS.navigate(~p"/campaign/#{item.id}/edit")}
+              >Edit
+              </button>
+            </div>
+          <% end %>
+        </div>
       <% else %>
-      <div class=" mt-10 flex justify-center items-center">
-          <h1 class="text-2xl font-bold ">Wellcome here you can create new Campaigns. </h1>
-      </div>
+        <div class=" mt-10 flex justify-center items-center">
+          <h1 class="text-2xl font-bold ">Wellcome here you can create new Campaigns.</h1>
+        </div>
       <% end %>
-
-     </Layouts.app>
+    </Layouts.app>
     """
   end
 
