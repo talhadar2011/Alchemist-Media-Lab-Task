@@ -6,7 +6,7 @@
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
     <%= if length(@list) > 0 do %>
       <%= for item <- @list do %>
-        <div class="cursor-pointer h-50 m-2 p-4 border border-gray-300 rounded bg-white text-black "
+        <div class=" shadow-lg cursor-pointer h-50 m-2 p-4 border border-gray-300 rounded-xl bg-white text-black hover:scale-95 hover:shadow-2xl transition-transform"
         phx-click={ JS.navigate(~p"/campaign/#{item.id}")}
         >
          <div class="flex justify-between">

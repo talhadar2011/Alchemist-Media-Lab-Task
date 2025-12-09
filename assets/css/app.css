@@ -89,9 +89,9 @@
   --border: 1.5px;
   --depth: 1;
   --noise: 0;
-}
+} */
 
-/* Add variants based on LiveView classes */
+/* Add variants based on LiveView classes
 @custom-variant phx-click-loading (.phx-click-loading&, .phx-click-loading &);
 @custom-variant phx-submit-loading (.phx-submit-loading&, .phx-submit-loading &);
 @custom-variant phx-change-loading (.phx-change-loading&, .phx-change-loading &);

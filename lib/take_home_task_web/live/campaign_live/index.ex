@@ -5,6 +5,7 @@ defmodule TakeHomeTaskWeb.CampaignLive.Index do
 
   @impl true
   def render(assigns) do
+  IO.inspect(assigns.streams, label: "Assigns in CampaignLive.Index")
     ~H"""
     <Layouts.app flash={@flash}>
       <.header>
@@ -15,8 +16,9 @@ defmodule TakeHomeTaskWeb.CampaignLive.Index do
           </.button>
         </:actions>
       </.header>
-      <%= if  not Enum.empty?(@streams.campaign_collection.inserts) do %>
-        <.table id="campaign" rows={@streams.campaign_collection} row_click={fn {_id, campaign} -> JS.navigate(~p"/campaign/#{campaign}") end} >
+      <%= if @streams.campaign_collection != [] do %>
+
+        <%!-- <.table id="campaign" rows={@streams.campaign_collection} row_click={fn {_id, campaign} -> JS.navigate(~p"/campaign/#{campaign}") end} >
           <:col :let={{_id, campaign}} label="Name">
             <%= campaign.name %>
           </:col>
@@ -44,7 +46,7 @@ defmodule TakeHomeTaskWeb.CampaignLive.Index do
               Delete
             </.link>
           </:action>
-        </.table>
+        </.table> --%>
       <% else %>
       <div class=" mt-10 flex justify-center items-center">
           <h1 class="text-2xl font-bold ">Wellcome here you can create new Campaigns. </h1>
@@ -66,6 +68,7 @@ defmodule TakeHomeTaskWeb.CampaignLive.Index do
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
     campaign = Campaigns.get_campaign!(id)
+
     {:ok, _} = Campaigns.delete_campaign(campaign)
 
     {:noreply, stream_delete(socket, :campaign_collection, campaign)}
