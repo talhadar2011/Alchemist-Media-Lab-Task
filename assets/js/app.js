@@ -24,12 +24,48 @@ import {Socket} from "phoenix"
 import {LiveSocket} from "phoenix_live_view"
 import {hooks as colocatedHooks} from "phoenix-colocated/take_home_task"
 import topbar from "../vendor/topbar"
+import { Chart } from "chart.js/auto"; // Use 'auto' for modern Chart.js bundle
 
+let Hooks = {}
+
+Hooks.CampaignChart = {
+    // Stores the Chart.js instance
+    chart: null, 
+
+    // Runs once when the element appears on the page
+    mounted() {
+        let ctx = this.el.getContext('2d');
+        const initialData = JSON.parse(this.el.dataset.chartData);
+
+        this.chart = new Chart(ctx, {
+            type: 'line', // or 'bar', 'pie', etc.
+            data: initialData,
+            options: {} // Chart configuration options
+        });
+    },
+
+    // Runs every time the data in LiveView is updated and pushed to the client
+    updated() {
+        const newData = JSON.parse(this.el.dataset.chartData);
+        
+        // Update chart data and trigger redraw
+        this.chart.data.datasets = newData.datasets;
+        this.chart.data.labels = newData.labels;
+        this.chart.update('none'); // 'none' skips animation for faster updates
+    },
+
+    // Runs when the element is removed from the page (optional, for cleanup)
+    destroyed() {
+        this.chart.destroy();
+    }
+}
+
+const allHooks = {...colocatedHooks, ...Hooks}
 const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 const liveSocket = new LiveSocket("/live", Socket, {
   longPollFallbackMs: 2500,
   params: {_csrf_token: csrfToken},
-  hooks: {...colocatedHooks},
+  hooks: allHooks,
 })
 
 // Show progress bar on live navigation and form submits
@@ -80,4 +116,5 @@ if (process.env.NODE_ENV === "development") {
     window.liveReloader = reloader
   })
 }
+
 
