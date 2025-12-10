@@ -64,7 +64,7 @@ defmodule TakeHomeTaskWeb.CampaignLive.Index do
                 </div>
                 </div>
               <div class="mt-5 text-xl font-bold">
-                Daily Budget: {item.daily_budget}
+                Daily Budget: {item.daily_budget}$
               </div>
               <button class=" cursor-pointer bg-red-400 p-2 rounded text-white mt-10" phx-click={JS.push("delete", value: %{id: item.id})
               |> hide("##{dom_id}")} data-confirm={"Are you sure?You want to delete "<>item.name}
