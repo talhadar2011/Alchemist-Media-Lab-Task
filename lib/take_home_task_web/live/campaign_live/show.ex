@@ -162,7 +162,6 @@ defmodule TakeHomeTaskWeb.CampaignLive.Show do
 
       ctr = Float.round(clicks / impressions * 100, 2)
 
-      # add CTR to chart
       chart_data = socket.assigns.chart_data
       timestamp = "#{length(chart_data.labels) * 3}s"
 
@@ -232,10 +231,5 @@ defmodule TakeHomeTaskWeb.CampaignLive.Show do
     }
   end
 
-  # Example of how you update the data in a handle_info function:
-  # @impl true
-  # def handle_info(:new_data_point, socket) do
-  #   new_chart_data = calculate_new_data(socket.assigns.chart_data)
-  #   {:noreply, assign(socket, :chart_data, new_chart_data)}
-  # end
+
 end
