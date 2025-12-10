@@ -17,36 +17,7 @@ defmodule TakeHomeTaskWeb.CampaignLive.Index do
           </.button>
         </:actions>
       </.header>
-      <%= if @streams.campaign_collection != [] do %>
-        <%!-- <.table id="campaign" rows={@streams.campaign_collection} row_click={fn {_id, campaign} -> JS.navigate(~p"/campaign/#{campaign}") end} >
-          <:col :let={{_id, campaign}} label="Name">
-            <%= campaign.name %>
-          </:col>
-          <:col :let={{_id, campaign}} label="Daily budget">
-            <%= campaign.daily_budget %>
-          </:col>
-          <:col :let={{_id, campaign}} label="Status">
-            <div class="flex justify-center items-center gap-2">
-              <%= campaign.status %>
-              <div class={
-                "w-2 h-2 rounded " <>
-                if campaign.status == "Active", do: "bg-green-400", else: "bg-red-400"
-              }>
-              </div>
-            </div>
-          </:col>
-          <:action :let={{_id, campaign}}>
-            <div class="sr-only">
-              <.link navigate={~p"/campaign/#{campaign}"}>Show</.link>
-            </div>
-            <.link navigate={~p"/campaign/#{campaign}/edit"}>Edit</.link>
-          </:action>
-          <:action :let={{id, campaign}}>
-            <.link phx-click={JS.push("delete", value: %{id: campaign.id}) |> hide("##{id}")} data-confirm="Are you sure?">
-              Delete
-            </.link>
-          </:action>
-        </.table> --%>
+
         <div id="grid" phx-update="stream" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           <%= for {dom_id,item} <- @streams.campaign_collection do %>
             <div
@@ -76,11 +47,7 @@ defmodule TakeHomeTaskWeb.CampaignLive.Index do
             </div>
           <% end %>
         </div>
-      <% else %>
-        <div class=" mt-10 flex justify-center items-center">
-          <h1 class="text-2xl font-bold ">Wellcome here you can create new Campaigns.</h1>
-        </div>
-      <% end %>
+
     </Layouts.app>
     """
   end
